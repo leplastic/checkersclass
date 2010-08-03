@@ -48,5 +48,25 @@
             Indicates whenever the current piece is queen
             </summary>
         </member>
+        <member name="T:Softklin.Checkers.Board">
+            <summary>
+            Represents a game board for checkers game
+            </summary>
+        </member>
+        <member name="T:Softklin.Checkers.GameLog">
+            <summary>
+            Represents a full game log
+            </summary>
+        </member>
+        <member name="T:Softklin.Checkers.GameLogEntry">
+            <summary>
+            Represents an entry in the game log
+            </summary>
+        </member>
+        <member name="T:Softklin.Checkers.LogEntryType">
+            <summary>
+            Type of game log entry
+            </summary>
+        </member>
     </members>
 </doc>
