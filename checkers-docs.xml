@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Checkers</name>
+    </assembly>
+    <members>
+        <member name="T:Softklin.Checkers.Player">
+            <summary>
+            Represents a player in checkers game
+            </summary>
+        </member>
+        <member name="M:Softklin.Checkers.Player.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new player
+            </summary>
+            <param name="nickname">The player's nickname</param>
+            <param name="realName">The player's real name</param>
+            <example>Player p = new Player("mycoolnick", "John Big");</example>
+        </member>
+        <member name="P:Softklin.Checkers.Player.Nickname">
+            <summary>
+            The player's nickname
+            </summary>
+        </member>
+        <member name="P:Softklin.Checkers.Player.RealName">
+            <summary>
+            The player's real name
+            </summary>
+        </member>
+        <member name="T:Softklin.Checkers.Piece">
+            <summary>
+            Represents a piece in checkers game
+            </summary>
+        </member>
+        <member name="M:Softklin.Checkers.Piece.#ctor(Softklin.Checkers.Player)">
+            <summary>
+            Creates a new piece
+            </summary>
+            <param name="owner">The player who owns this piece</param>
+        </member>
+        <member name="P:Softklin.Checkers.Piece.OwnerPlayer">
+            <summary>
+            Gets the player how owns the current piece [read-only]
+            </summary>
+        </member>
+        <member name="P:Softklin.Checkers.Piece.Queen">
+            <summary>
+            Indicates whenever the current piece is queen
+            </summary>
+        </member>
+    </members>
+</doc>
