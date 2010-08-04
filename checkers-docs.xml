@@ -64,6 +64,17 @@
             Represents a game board for checkers game
             </summary>
         </member>
+        <member name="M:Softklin.Checkers.Board.#ctor(System.Collections.Generic.List{Softklin.Checkers.Player})">
+            <summary>
+            Creates a new checkers board
+            </summary>
+            <param name="players">The player list</param>
+        </member>
+        <member name="M:Softklin.Checkers.Board.populateBoard">
+            <summary>
+            Populates the board with the pieces
+            </summary>
+        </member>
         <member name="T:Softklin.Checkers.Piece">
             <summary>
             Represents a piece in checkers game
@@ -92,7 +103,7 @@
         </member>
         <member name="M:Softklin.Checkers.Score.#ctor">
             <summary>
-            Creates a new score card with default multiplication factor of 1
+            Creates a new score card
             </summary>
         </member>
         <member name="M:Softklin.Checkers.Score.addPlayer(Softklin.Checkers.Player)">
@@ -124,17 +135,29 @@
             <param name="type">Score type to assign</param>
             <param name="count">Number of times to add the score</param>
         </member>
-        <member name="M:Softklin.Checkers.Score.getScoreBoard">
+        <member name="M:Softklin.Checkers.Score.mergeScores(Softklin.Checkers.Score)">
             <summary>
-            Returns the actual score card
+            Merges two score cards and returns the new one
             </summary>
-            <returns>Score card with the actual results</returns>
+            <param name="otherScore">The other score card</param>
+            <returns>New core card with the result of merge</returns>
+            <remarks>
+            The score cards won't be modified.
+            Instead, a new score card will be created, and the results copied to the new one
+            </remarks>
         </member>
         <member name="P:Softklin.Checkers.Score.LockedScores">
             <summary>
             Indicates whenever the score card it's locked or not.
             A locked score card means that any scores added will be ignored
             </summary>
+        </member>
+        <member name="P:Softklin.Checkers.Score.Item(Softklin.Checkers.Player)">
+            <summary>
+            Gets the curent score for a player
+            </summary>
+            <param name="p">The player</param>
+            <returns>Player's score</returns>
         </member>
         <member name="T:Softklin.Checkers.ScoreType">
             <summary>
@@ -154,6 +177,23 @@
         <member name="F:Softklin.Checkers.ScoreType.DEFEAT">
             <summary>
             Represents a player's defeat
+            </summary>
+        </member>
+        <member name="T:Softklin.Checkers.Game">
+            <summary>
+            Represents a single checkers game
+            </summary>
+        </member>
+        <member name="M:Softklin.Checkers.Game.#ctor(Softklin.Checkers.Player,Softklin.Checkers.Player)">
+            <summary>
+            Creates a new game with two players
+            </summary>
+            <param name="player1">The player 1</param>
+            <param name="player2">The player 2</param>
+        </member>
+        <member name="T:Softklin.Checkers.CheckersGameException">
+            <summary>
+            Checkers Game Exception
             </summary>
         </member>
     </members>
