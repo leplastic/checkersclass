@@ -7,7 +7,19 @@ namespace Softklin.Checkers
     /// </summary>
     class Board
     {
+        #region Variables
+
         private const int BOARD_SIZE = 8;
-        private Piece[][] theBoard;
+        private Piece[,] theBoard;
+        private GameLog theLog;
+
+        #endregion
+
+        public Board()
+        {
+            this.theBoard = new Piece[BOARD_SIZE, BOARD_SIZE];
+            this.theLog = new GameLog();
+        }
+
     }
 }
