@@ -33,5 +33,20 @@ namespace Softklin.Checkers
             this.Nickname = nickname;
             this.RealName = realName;
         }
+
+
+        #region Overrides
+
+        public override bool Equals(object obj)
+        {
+            return (obj.GetType().Equals(this.GetType()) && ((Player) obj).Nickname == this.Nickname);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Nickname.GetHashCode();
+        }
+
+        #endregion
     }
 }

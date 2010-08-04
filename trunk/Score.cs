@@ -3,21 +3,14 @@ using System.Collections.Generic;
 
 namespace Softklin.Checkers
 {
-
-
-    // TODO create a better implementation of Score card
-    // The aim is to allow final users to get the resulst like this
-    // scorecard[Player][ScoreType]
-
-
     /// <summary>
     /// Represents a score card for the game with nr of victores, draws and defeats
     /// </summary>
     class Score
     {
         #region Variables
-        // the score is
-        private Dictionary<Player, int[]> scoreCard;
+
+        private Dictionary<Player, Dictionary<ScoreType, int>> scoreCard;
 
         #endregion
 
@@ -38,8 +31,19 @@ namespace Softklin.Checkers
         /// </summary>
         public Score()
         {
-            this.scoreCard = new Dictionary<Player, int[]>();
+            this.scoreCard = new Dictionary<Player, Dictionary<ScoreType, int>>();
         }
+
+        /// <summary>
+        /// Gets the curent score for a player
+        /// </summary>
+        /// <param name="p">The player</param>
+        /// <returns>Player's score</returns>
+        public Dictionary<ScoreType, int> this[Player p]
+	    {
+            get { return this.scoreCard[p]; }
+            private set { this.scoreCard[p] = value; }
+	    }
 
         /// <summary>
         /// Adds a player to the score card.
@@ -53,7 +57,14 @@ namespace Softklin.Checkers
         public void addPlayer(Player player)
         {
             if (!this.LockedScores && !this.scoreCard.ContainsKey(player))
-                this.scoreCard.Add(player, new int[3] {0,0,0});
+            {
+                Dictionary<ScoreType, int> points = new Dictionary<ScoreType, int>(3);
+                points.Add(ScoreType.VICTORY, 0);
+                points.Add(ScoreType.DRAW, 0);
+                points.Add(ScoreType.DEFEAT, 0);
+
+                this.scoreCard.Add(player, points);
+            }
         }
 
         /// <summary>
@@ -69,22 +80,7 @@ namespace Softklin.Checkers
             addPlayer(player);
 
             if (!this.LockedScores)
-            {
-                switch (type)
-                {
-                    case ScoreType.VICTORY:
-                        this.scoreCard[player][0] += 1;
-                        break;
-
-                    case ScoreType.DRAW:
-                        this.scoreCard[player][1] += 1;
-                        break;
-
-                    case ScoreType.DEFEAT:
-                        this.scoreCard[player][2] += 1;
-                        break;
-                }
-            }
+                this.scoreCard[player][type] += 1;
 
         }
 
@@ -102,12 +98,28 @@ namespace Softklin.Checkers
         }
 
         /// <summary>
-        /// Returns the actual score card
+        /// Merges two score cards and returns the new one
         /// </summary>
-        /// <returns>Score card with the actual results</returns>
-        public Dictionary<Player, int[]> getScoreCard()
+        /// <param name="otherScore">The other score card</param>
+        /// <returns>New core card with the result of merge</returns>
+        /// <remarks>
+        /// The score cards won't be modified.
+        /// Instead, a new score card will be created, and the results copied to the new one
+        /// </remarks>
+        public Score mergeScores(Score otherScore)
         {
-            return this.scoreCard;
+            Score result = new Score();
+            result.scoreCard = this.scoreCard;
+
+            foreach (Player p in otherScore.scoreCard.Keys)
+            {
+                Dictionary<ScoreType, int> points = otherScore.scoreCard[p];
+                result.addScore(p, ScoreType.VICTORY, points[ScoreType.VICTORY]);
+                result.addScore(p, ScoreType.DRAW, points[ScoreType.DRAW]);
+                result.addScore(p, ScoreType.DEFEAT, points[ScoreType.DEFEAT]);
+            }
+
+            return result;
         }
     }
 
