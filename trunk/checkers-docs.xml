@@ -4,6 +4,38 @@
         <name>Checkers</name>
     </assembly>
     <members>
+        <member name="T:Softklin.Checkers.GameLog">
+            <summary>
+            Represents a full game log
+            </summary>
+        </member>
+        <member name="M:Softklin.Checkers.GameLog.#ctor">
+            <summary>
+            Creates a new game log
+            </summary>
+        </member>
+        <member name="M:Softklin.Checkers.GameLog.logEvent(Softklin.Checkers.GameLogEntry)">
+            <summary>
+            Adds a new log entry
+            </summary>
+            <param name="glo">The log entry to add</param>
+        </member>
+        <member name="M:Softklin.Checkers.GameLog.getAllEntries">
+            <summary>
+            Returns a complete copy of the log
+            </summary>
+            <returns>Entire log of the game</returns>
+        </member>
+        <member name="T:Softklin.Checkers.GameLogEntry">
+            <summary>
+            Represents an entry in the game log
+            </summary>
+        </member>
+        <member name="T:Softklin.Checkers.LogEntryType">
+            <summary>
+            Type of game log entry
+            </summary>
+        </member>
         <member name="T:Softklin.Checkers.Player">
             <summary>
             Represents a player in checkers game
@@ -27,6 +59,11 @@
             The player's real name
             </summary>
         </member>
+        <member name="T:Softklin.Checkers.Board">
+            <summary>
+            Represents a game board for checkers game
+            </summary>
+        </member>
         <member name="T:Softklin.Checkers.Piece">
             <summary>
             Represents a piece in checkers game
@@ -48,24 +85,75 @@
             Indicates whenever the current piece is queen
             </summary>
         </member>
-        <member name="T:Softklin.Checkers.Board">
+        <member name="T:Softklin.Checkers.Score">
             <summary>
-            Represents a game board for checkers game
+            Represents a score card for the game with nr of victores, draws and defeats
             </summary>
         </member>
-        <member name="T:Softklin.Checkers.GameLog">
+        <member name="M:Softklin.Checkers.Score.#ctor">
             <summary>
-            Represents a full game log
+            Creates a new score card with default multiplication factor of 1
             </summary>
         </member>
-        <member name="T:Softklin.Checkers.GameLogEntry">
+        <member name="M:Softklin.Checkers.Score.addPlayer(Softklin.Checkers.Player)">
             <summary>
-            Represents an entry in the game log
+            Adds a player to the score card.
+            </summary>
+            <param name="player">The player to add</param>
+            <remarks>
+            Each player starts with 0 (zero) points.
+            If the player is already in the score card, nothing is done.
+            If the score card is locked, the player won't be added.
+            </remarks>
+        </member>
+        <member name="M:Softklin.Checkers.Score.addScore(Softklin.Checkers.Player,Softklin.Checkers.ScoreType)">
+            <summary>
+            Sets a victory, draw or defeat to the player's score
+            </summary>
+            <param name="player">The player</param>
+            <param name="type">Score type to assign</param>
+            <remarks>
+            To assign multiple scores of one type, see the overload method with the count parameter.
+            </remarks>
+        </member>
+        <member name="M:Softklin.Checkers.Score.addScore(Softklin.Checkers.Player,Softklin.Checkers.ScoreType,System.Int32)">
+            <summary>
+            Sets a victory, draw or defeat to the player's score
+            </summary>
+            <param name="player">The player</param>
+            <param name="type">Score type to assign</param>
+            <param name="count">Number of times to add the score</param>
+        </member>
+        <member name="M:Softklin.Checkers.Score.getScoreBoard">
+            <summary>
+            Returns the actual score card
+            </summary>
+            <returns>Score card with the actual results</returns>
+        </member>
+        <member name="P:Softklin.Checkers.Score.LockedScores">
+            <summary>
+            Indicates whenever the score card it's locked or not.
+            A locked score card means that any scores added will be ignored
             </summary>
         </member>
-        <member name="T:Softklin.Checkers.LogEntryType">
+        <member name="T:Softklin.Checkers.ScoreType">
             <summary>
-            Type of game log entry
+            Represents score types for the score card
+            </summary>
+        </member>
+        <member name="F:Softklin.Checkers.ScoreType.VICTORY">
+            <summary>
+            Represents a player's victory
+            </summary>
+        </member>
+        <member name="F:Softklin.Checkers.ScoreType.DRAW">
+            <summary>
+            Represents a player's draw
+            </summary>
+        </member>
+        <member name="F:Softklin.Checkers.ScoreType.DEFEAT">
+            <summary>
+            Represents a player's defeat
             </summary>
         </member>
     </members>
