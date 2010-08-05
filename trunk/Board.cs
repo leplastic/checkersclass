@@ -13,6 +13,8 @@ namespace Softklin.Checkers
         private const int BOARD_SIZE = 8;
         private Piece[,] theBoard;
         private List<Player> thePlayers;
+        private PositionStatus[,] positionCache;
+        private bool cacheOutdated;
 
         #endregion
 
@@ -24,7 +26,10 @@ namespace Softklin.Checkers
         public Board(List<Player> players)
         {
             this.theBoard = new Piece[BOARD_SIZE, BOARD_SIZE];
-            this.thePlayers = players;
+            this.thePlayers = new List<Player>(players);
+            this.positionCache = new PositionStatus[BOARD_SIZE, BOARD_SIZE];
+            this.cacheOutdated = false;
+            populateBoard();
         }
 
         /// <summary>
@@ -37,28 +42,86 @@ namespace Softklin.Checkers
 
             // first player
             for (int i = 0; i < 4; i++)
-            {
-                if (i % 2 == 0)
-                    for (int c = 0; c < 8; c += 2)
-                        this.theBoard[i,c] = new Piece(this.thePlayers[0]);
-
-                else
-                    for (int c = 1; c < 8; c += 2)
-                        this.theBoard[i,c] = new Piece(this.thePlayers[0]);
-            }
+                for (int c = (i % 2); c < 8; c += 2)
+                    this.theBoard[i, c] = new Piece(this.thePlayers[0]);
 
             // second player
             for (int i = 4; i < 8; i++)
-            {
-                if (i % 2 == 0)
-                    for (int c = 0; c < 8; c += 2)
-                        this.theBoard[i, c] = new Piece(this.thePlayers[1]);
-
-                else
-                    for (int c = 1; c < 8; c += 2)
-                        this.theBoard[i, c] = new Piece(this.thePlayers[1]);
-            }
+                for (int c = (i % 2); c < 8; c += 2)
+                    this.theBoard[i, c] = new Piece(this.thePlayers[1]);
         }
 
+        /// <summary>
+        /// Generates a fresh position cache
+        /// </summary>
+        private void generatePositionCache()
+        {
+            /*for (int i = 0; i < BOARD_SIZE; i++)
+            {
+                for (int j = 0; j < BOARD_SIZE; j++)
+                {
+                    if (this.theBoard[i, j] == null)
+                    {
+                        PositionStatus p;
+                        p.IsOccupied = true;
+                        this.positionCache[i, j] = new PositionStatus();
+                    }
+                    else
+                    {
+                        new PositionStatus(this.theBoard[i, j].OwnerPlayer, this.theBoard[i, j].Queen);
+                    }
+                }
+            }*/
+        }
+
+        /// <summary>
+        /// Generates a position cache for clients
+        /// </summary>
+        /// <returns>Position cache of all pieces</returns>
+        public PositionStatus[,] getPiecesPosition()
+        {
+            if (this.cacheOutdated)
+                generatePositionCache();
+
+            return this.positionCache;
+        }
+    }
+
+
+    /// <summary>
+    /// Indicates the status of current position on the board
+    /// </summary>
+    public struct PositionStatus
+    {
+        /// <summary>
+        /// Indicates whenever the current board position is ocuppied whith a piece or not
+        /// </summary>
+        public bool IsOccupied { get; private set; }
+
+        /// <summary>
+        /// Indicates the players who owns the piece of this position (if any)
+        /// </summary>
+        /// <remarks>
+        /// If there's no piece in this position, the player wil return null
+        /// </remarks>
+        public Player ThePlayer { get; private set; }
+
+        /// <summary>
+        /// Indicates if the current piece is queen (if any)
+        /// </summary>
+        public bool IsQueen { get; private set; }
+    }
+
+
+    [Serializable]
+    public class CheckersBoardException : Exception
+    {
+        public CheckersBoardException() { }
+        public CheckersBoardException(string message) : base(message) { }
+        public CheckersBoardException(string message, Exception inner) : base(message, inner) { }
+        protected CheckersBoardException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
     }
 }

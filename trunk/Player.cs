@@ -5,7 +5,7 @@ namespace Softklin.Checkers
     /// <summary>
     /// Represents a player in checkers game
     /// </summary>
-    class Player
+    public class Player
     {
         #region Properties
 
