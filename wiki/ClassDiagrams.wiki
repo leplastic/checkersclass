@@ -1,0 +1,8 @@
+#summary Class diagram along the project development
+#labels Phase-Design
+
+= Initial Class Diagram =
+
+Initially, I'm planning to implement all the hard work on the Board and Game classes. As it's being written in C#, it will use events for game operations.
+
+[http://i34.tinypic.com/2wbu8gx.jpg]
