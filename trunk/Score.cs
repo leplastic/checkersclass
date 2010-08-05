@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Softklin.Checkers
 {
     /// <summary>
-    /// Represents a score card for the game with nr of victores, draws and defeats
+    /// Represents a score card for the game with number of victores, draws and defeats
     /// </summary>
     class Score
     {
@@ -39,6 +39,10 @@ namespace Softklin.Checkers
         /// </summary>
         /// <param name="p">The player</param>
         /// <returns>Player's score</returns>
+        /// <example>
+        /// This way, you can access a player score like this 
+        /// <code>scorecard[PlayerIntance][ScoreType]</code>
+        /// </example>
         public Dictionary<ScoreType, int> this[Player p]
 	    {
             get { return this.scoreCard[p]; }

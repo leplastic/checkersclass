@@ -12,7 +12,7 @@ namespace Softklin.Checkers
         /// <summary>
         /// The player's nickname
         /// </summary>
-        public string Nickname { get; set; }
+        public string Nickname { get; private set; }
 
         /// <summary>
         /// The player's real name
@@ -30,6 +30,9 @@ namespace Softklin.Checkers
         /// <example>Player p = new Player("mycoolnick", "John Big");</example>
         public Player(string nickname, string realName)
         {
+            if (nickname == null || nickname == String.Empty)
+                throw new CheckersPlayerException("Nickname cannot be null or empty");
+
             this.Nickname = nickname;
             this.RealName = realName;
         }
@@ -48,5 +51,18 @@ namespace Softklin.Checkers
         }
 
         #endregion
+    }
+
+
+    [Serializable]
+    public class CheckersPlayerException : Exception
+    {
+        public CheckersPlayerException() { }
+        public CheckersPlayerException(string message) : base(message) { }
+        public CheckersPlayerException(string message, Exception inner) : base(message, inner) { }
+        protected CheckersPlayerException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
     }
 }
