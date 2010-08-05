@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Softklin.Checkers
 {
     /// <summary>
     /// Represents a single checkers game
     /// </summary>
-    class Game
+    public class Game
     {
         #region Variables
 
