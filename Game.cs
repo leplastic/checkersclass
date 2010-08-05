@@ -8,11 +8,30 @@ namespace Softklin.Checkers
     /// </summary>
     public class Game
     {
+        #region Delegates and Events
+
+        /// <summary>
+        /// Occurs when the game starts
+        /// </summary>
+        public event GameStartedEvent GameStarted;
+        public delegate void GameStartedEvent(Player firstPlayer);
+
+        #endregion
+
         #region Variables
 
         private Board theBoard;
         private GameLog theLog;
         private List<Player> thePlayers;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Indicates the game state
+        /// </summary>
+        public GameState GameStatus { get; private set; }
 
         #endregion
 
@@ -31,10 +50,63 @@ namespace Softklin.Checkers
 
             this.theLog = new GameLog();
             this.thePlayers = new List<Player>(2);
-            this.thePlayers.Add(player1);
-            this.thePlayers.Add(player2);
+            this.thePlayers[0] = player1;
+            this.thePlayers[1] = player2;
             this.theBoard = new Board(this.thePlayers);
+            this.GameStatus = GameState.NOT_STARTED;
         }
+
+        /// <summary>
+        /// Starts the game. The first player will be choosen randomly.
+        /// </summary>
+        /// <remarks>
+        /// As the checkers game has two players, the random factor is based on even/odd,
+        /// so both the players have equal oportunity to start the game.
+        /// </remarks>
+        public void startGame()
+        {
+            Random r = new Random();
+            int n = r.Next(1, 10);
+
+            Player who = this.thePlayers[n % 2];
+            this.GameStatus = GameState.RUNNING;
+            GameStarted(who);
+        }
+
+        /// <summary>
+        /// Starts the game. The chosen player will be the first to play
+        /// </summary>
+        /// <param name="first">The fisrt player to play</param>
+        public void startGame(Player first)
+        {
+            if (!this.thePlayers.Contains(first))
+                throw new CheckersGameException("The first player doesn't exists");
+
+            this.GameStatus = GameState.RUNNING;
+            GameStarted(first);
+        }
+    }
+
+
+    /// <summary>
+    /// Represents the current game status
+    /// </summary>
+    public enum GameState
+    {
+        /// <summary>
+        /// The game was not started yet
+        /// </summary>
+        NOT_STARTED,
+
+        /// <summary>
+        /// The game is currently running
+        /// </summary>
+        RUNNING,
+
+        /// <summary>
+        /// The game already ended due a victory or draw
+        /// </summary>
+        ENDED
     }
 
 
