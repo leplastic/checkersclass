@@ -30,6 +30,7 @@ namespace Softklin.Checkers
             this.positionCache = new PositionStatus[BOARD_SIZE, BOARD_SIZE];
             this.cacheOutdated = false;
             populateBoard();
+            generatePositionCache();
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Softklin.Checkers
         /// </summary>
         private void populateBoard()
         {
-            // Each player has a dark square on his far left and a light square on his far right.
+            // "Each player has a dark square on his far left and a light square on his far right."
             // http://www.jimloy.com/checkers/rules2.htm
 
             // first player
@@ -56,22 +57,28 @@ namespace Softklin.Checkers
         /// </summary>
         private void generatePositionCache()
         {
-            /*for (int i = 0; i < BOARD_SIZE; i++)
+            // TODO This method can be FASTER if it only counts differences to the last play
+            // eg. update only the changed pieces since the last move
+            for (int i = 0; i < BOARD_SIZE; i++)
             {
                 for (int j = 0; j < BOARD_SIZE; j++)
                 {
                     if (this.theBoard[i, j] == null)
                     {
-                        PositionStatus p;
-                        p.IsOccupied = true;
+                        PositionStatus p = new PositionStatus();
+                        p.IsOccupied = false;
                         this.positionCache[i, j] = new PositionStatus();
                     }
                     else
                     {
-                        new PositionStatus(this.theBoard[i, j].OwnerPlayer, this.theBoard[i, j].Queen);
+                        PositionStatus p = new PositionStatus();
+                        p.IsOccupied = true;
+                        p.ThePlayer = this.theBoard[i, j].OwnerPlayer;
+                        p.IsQueen = this.theBoard[i, j].Queen;
+                        this.positionCache[i, j] = p;
                     }
                 }
-            }*/
+            }
         }
 
         /// <summary>
@@ -80,10 +87,15 @@ namespace Softklin.Checkers
         /// <returns>Position cache of all pieces</returns>
         public PositionStatus[,] getPiecesPosition()
         {
-            if (this.cacheOutdated)
-                generatePositionCache();
+            Object justToLockThread = new Object();
 
-            return this.positionCache;
+            lock (justToLockThread)
+            {
+                if (this.cacheOutdated)
+                    generatePositionCache();
+
+                return this.positionCache;
+            }
         }
     }
 
@@ -96,7 +108,7 @@ namespace Softklin.Checkers
         /// <summary>
         /// Indicates whenever the current board position is ocuppied whith a piece or not
         /// </summary>
-        public bool IsOccupied { get; private set; }
+        public bool IsOccupied { get; internal set; }
 
         /// <summary>
         /// Indicates the players who owns the piece of this position (if any)
@@ -104,12 +116,12 @@ namespace Softklin.Checkers
         /// <remarks>
         /// If there's no piece in this position, the player wil return null
         /// </remarks>
-        public Player ThePlayer { get; private set; }
+        public Player ThePlayer { get; internal set; }
 
         /// <summary>
         /// Indicates if the current piece is queen (if any)
         /// </summary>
-        public bool IsQueen { get; private set; }
+        public bool IsQueen { get; internal set; }
     }
 
 

@@ -28,7 +28,7 @@ namespace Softklin.Checkers
         /// <param name="nickname">The player's nickname</param>
         /// <param name="realName">The player's real name</param>
         /// <example>Player p = new Player("mycoolnick", "John Big");</example>
-        public Player(string nickname, string realName)
+        internal Player(string nickname, string realName)
         {
             if (nickname == null || nickname == String.Empty)
                 throw new CheckersPlayerException("Nickname cannot be null or empty");
@@ -48,6 +48,11 @@ namespace Softklin.Checkers
         public override int GetHashCode()
         {
             return this.Nickname.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return this.Nickname;
         }
 
         #endregion
