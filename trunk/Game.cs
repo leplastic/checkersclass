@@ -40,18 +40,18 @@ namespace Softklin.Checkers
         /// </summary>
         /// <param name="player1">The player 1</param>
         /// <param name="player2">The player 2</param>
-        public Game(Player player1, Player player2)
+        internal Game(Player player1, Player player2)
         {
             if (player1 == null || player2 == null)
-                throw new CheckersGameException("Instance of player1/2 required");
+                throw new CheckersGameException("Instance of player1 and player 2 required");
 
             if (player1.Equals(player2))
                 throw new CheckersGameException("The players cannot be equal");
 
             this.theLog = new GameLog();
             this.thePlayers = new List<Player>(2);
-            this.thePlayers[0] = player1;
-            this.thePlayers[1] = player2;
+            this.thePlayers.Add(player1);
+            this.thePlayers.Add(player2);
             this.theBoard = new Board(this.thePlayers);
             this.GameStatus = GameState.NOT_STARTED;
         }
@@ -79,11 +79,29 @@ namespace Softklin.Checkers
         /// <param name="first">The fisrt player to play</param>
         public void startGame(Player first)
         {
+            if (this.GameStatus != GameState.NOT_STARTED)
+                throw new CheckersGameException("The game already started or ended. Please start a new game instead");
+
             if (!this.thePlayers.Contains(first))
-                throw new CheckersGameException("The first player doesn't exists");
+                throw new CheckersGameException("The first player doesn't exists in this game");
 
             this.GameStatus = GameState.RUNNING;
             GameStarted(first);
+        }
+
+        /// <summary>
+        /// Generates a position cache for clients
+        /// </summary>
+        /// <returns>Position cache of all pieces</returns>
+        /// <remarks>
+        /// You can call this method at any time you need to know the current piece position.
+        /// Although this method supports multiple access with a thread,
+        /// it's recomeended that you only get information when the game changes (eg, a move occurs,
+        /// or the player's turn ends), through the game events
+        /// </remarks>
+        public PositionStatus[,] getPiecesPosition()
+        {
+            return this.theBoard.getPiecesPosition();
         }
     }
 
