@@ -19,6 +19,7 @@ namespace Softklin.Checkers
         #region Variables
 
         private List<GameLogEntry> theLog;
+        private DateTime startTime;
 
         #endregion
 
@@ -28,6 +29,7 @@ namespace Softklin.Checkers
         public GameLog()
         {
             this.theLog = new List<GameLogEntry>();
+            this.startTime = DateTime.Now;
         }
 
         /// <summary>
@@ -54,15 +56,59 @@ namespace Softklin.Checkers
         }
     }
 
+
     /// <summary>
-    /// Represents an entry in the game log
+    /// Represents a generic entry in the game log
     /// </summary>
     class GameLogEntry
     {
-        private DateTime time;
-        private LogEntryType type;
+        public LogEntryType Type { get; internal set; }
+        public DateTime Time { get; internal set; }
 
+        /// <summary>
+        /// Creates a new generic game log entry
+        /// </summary>
+        /// <param name="time">The current/real time</param>
+        public GameLogEntry(DateTime time)
+        {
+            this.Time = time;
+        }
     }
+
+
+    /// <summary>
+    /// Represents a log entry indicating that the game started
+    /// </summary>
+    class GameStartLogEntry : GameLogEntry
+    {
+        private Player p;
+
+        /// <summary>
+        /// Creates a new game log entry
+        /// </summary>
+        /// <param name="firstPlayer">The first player to play</param>
+        public GameStartLogEntry(Player firstPlayer) : base(DateTime.Now)
+        {
+            base.Type = LogEntryType.GAME_START;
+            this.p = firstPlayer;
+        }
+    }
+
+
+    /// <summary>
+    /// Represents a log entry indicating that the game ended
+    /// </summary>
+    class GameEndLogEntry : GameLogEntry
+    {
+        public GameEndLogEntry(Player firstPlayer) : base(DateTime.Now)
+        {
+            base.Type = LogEntryType.GAME_END;
+        }
+    }
+
+
+    // TODO Create more classes for other cases below...
+
 
     /// <summary>
     /// Type of game log entry

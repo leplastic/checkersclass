@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Softklin.Checkers
 {
     /// <summary>
-    /// Allows you to start a checkers game
+    /// Allows you to create all needed elementos to start a checkers game
     /// </summary>
     /// <remarks>
     /// This class is a factory. You should create your instances of game elements through this class.
@@ -30,10 +30,13 @@ namespace Softklin.Checkers
         /// </summary>
         /// <param name="player1">The player 1 instance</param>
         /// <param name="player2">The player 2 instance</param>
+        /// <param name="useGameLog">Allows the game to use the built-in game log feature or not</param>
         /// <returns>An instance of a newly created game</returns>
-        public static Game createGame(Player player1, Player player2)
+        public static Game createGame(Player player1, Player player2, bool useGameLog)
         {
-            return new Game(player1, player2);
+            return new Game(player1, player2, useGameLog);
         }
+
+
     }
 }
