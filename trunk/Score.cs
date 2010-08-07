@@ -78,6 +78,7 @@ namespace Softklin.Checkers
         /// <param name="type">Score type to assign</param>
         /// <remarks>
         /// To assign multiple scores of one type, see the overload method with the count parameter.
+        /// If the players isn't in the score card, it will be added automatically.
         /// </remarks>
         public void addScore(Player player, ScoreType type)
         {
@@ -94,6 +95,9 @@ namespace Softklin.Checkers
         /// <param name="player">The player</param>
         /// <param name="type">Score type to assign</param>
         /// <param name="count">Number of times to add the score</param>
+        /// <remarks>
+        /// If the players isn't in the score card, it will be added automatically.
+        /// </remarks>
         public void addScore(Player player, ScoreType type, int count)
         {
             if (!this.LockedScores)

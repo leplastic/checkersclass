@@ -22,6 +22,7 @@ namespace Softklin.Checkers
 
         private Board theBoard;
         private GameLog theLog;
+        private Score theScoreCard;
         private List<Player> thePlayers;
 
         #endregion
@@ -40,7 +41,12 @@ namespace Softklin.Checkers
         /// </summary>
         /// <param name="player1">The player 1</param>
         /// <param name="player2">The player 2</param>
-        internal Game(Player player1, Player player2)
+        /// <param name="allowLogging">Enable the gamelog feature or not</param>
+        /// <remarks>
+        /// Once enabled, the gamelog cannot be stopped.
+        /// Also, if disabled by default, it's not possible to enable it when the game is running.
+        /// </remarks>
+        internal Game(Player player1, Player player2, bool allowLogging)
         {
             if (player1 == null || player2 == null)
                 throw new CheckersGameException("Instance of player1 and player 2 required");
@@ -48,12 +54,15 @@ namespace Softklin.Checkers
             if (player1.Equals(player2))
                 throw new CheckersGameException("The players cannot be equal");
 
-            this.theLog = new GameLog();
+            if (allowLogging)
+                this.theLog = new GameLog();
+
             this.thePlayers = new List<Player>(2);
             this.thePlayers.Add(player1);
             this.thePlayers.Add(player2);
             this.theBoard = new Board(this.thePlayers);
             this.GameStatus = GameState.NOT_STARTED;
+            this.theScoreCard = new Score();
         }
 
         /// <summary>
