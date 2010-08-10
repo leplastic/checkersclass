@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Softklin.Checkers
 {
@@ -17,9 +16,6 @@ namespace Softklin.Checkers
         /// <param name="nickname">The player's nickname</param>
         /// <param name="realname">The player's realname</param>
         /// <returns>An instance of new player</returns>
-        /// <remarks>
-        /// The nickname should be unique
-        /// </remarks>
         public static Player createPlayer(string nickname, string realname)
         {
             return new Player(nickname, realname);
@@ -32,11 +28,12 @@ namespace Softklin.Checkers
         /// <param name="player2">The player 2 instance</param>
         /// <param name="useGameLog">Allows the game to use the built-in game log feature or not</param>
         /// <returns>An instance of a newly created game</returns>
+        /// <remarks>
+        /// The players should not use the same nickname (they can't be the same player)
+        /// </remarks>
         public static Game createGame(Player player1, Player player2, bool useGameLog)
         {
             return new Game(player1, player2, useGameLog);
         }
-
-
     }
 }

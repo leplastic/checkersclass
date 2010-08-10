@@ -6,7 +6,7 @@ namespace Softklin.Checkers
     /// <summary>
     /// Represents a score card for the game with number of victores, draws and defeats
     /// </summary>
-    class Score
+    public class Score
     {
         #region Variables
 
@@ -29,9 +29,18 @@ namespace Softklin.Checkers
         /// <summary>
         /// Creates a new score card
         /// </summary>
-        public Score()
+        internal Score()
         {
+            this.LockedScores = false;
             this.scoreCard = new Dictionary<Player, Dictionary<ScoreType, int>>();
+        }
+
+        internal Score(List<Player> players) : this()
+        {
+            foreach (Player p in players)
+            {
+                addPlayer(p);
+            }
         }
 
         /// <summary>
@@ -40,7 +49,7 @@ namespace Softklin.Checkers
         /// <param name="p">The player</param>
         /// <returns>Player's score</returns>
         /// <example>
-        /// This way, you can access a player score like this 
+        /// This way, you can access a player's score like this 
         /// <code>scorecard[PlayerIntance][ScoreType]</code>
         /// </example>
         public Dictionary<ScoreType, int> this[Player p]
@@ -58,7 +67,7 @@ namespace Softklin.Checkers
         /// If the player is already in the score card, nothing is done.
         /// If the score card is locked, the player won't be added.
         /// </remarks>
-        public void addPlayer(Player player)
+        internal void addPlayer(Player player)
         {
             if (!this.LockedScores && !this.scoreCard.ContainsKey(player))
             {
@@ -80,7 +89,7 @@ namespace Softklin.Checkers
         /// To assign multiple scores of one type, see the overload method with the count parameter.
         /// If the players isn't in the score card, it will be added automatically.
         /// </remarks>
-        public void addScore(Player player, ScoreType type)
+        internal void addScore(Player player, ScoreType type)
         {
             addPlayer(player);
 
@@ -98,7 +107,7 @@ namespace Softklin.Checkers
         /// <remarks>
         /// If the players isn't in the score card, it will be added automatically.
         /// </remarks>
-        public void addScore(Player player, ScoreType type, int count)
+        internal void addScore(Player player, ScoreType type, int count)
         {
             if (!this.LockedScores)
                 for (int i = 0; i < count; i++)
@@ -135,7 +144,7 @@ namespace Softklin.Checkers
     /// <summary>
     /// Represents score types for the score card
     /// </summary>
-    enum ScoreType
+    public enum ScoreType
     {
         /// <summary>
         /// Represents a player's victory
