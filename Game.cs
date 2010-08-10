@@ -16,16 +16,27 @@ namespace Softklin.Checkers
         public event GameStartedEvent GameStarted;
         public delegate void GameStartedEvent(Player firstPlayer);
 
+        /// <summary>
+        /// Occurs when the turns changes
+        /// </summary>
+        /// <remarks>
+        /// This event is not raised when the game starts (eg. changing the turn for the fisrt player). 
+        /// When the first player's turn end, and for the next ones, this event will be raised normally
+        /// </remarks>
+        public event ChangedTurnEvent ChangedTurn;
+        public delegate void ChangedTurnEvent(Player nextPlayer);
+
         #endregion
+
 
         #region Variables
 
         private Board theBoard;
         private GameLog theLog;
-        private Score theScoreCard;
         private List<Player> thePlayers;
 
         #endregion
+
 
         #region Properties
 
@@ -34,7 +45,18 @@ namespace Softklin.Checkers
         /// </summary>
         public GameState GameStatus { get; private set; }
 
+        /// <summary>
+        /// Gets the current score card
+        /// </summary>
+        public Score ScoreCard { get; private set; }
+
+        /// <summary>
+        /// Gets the player who will play (next turn or next move)
+        /// </summary>
+        public Player NextPlayer { get; private set; }
+
         #endregion
+
 
         /// <summary>
         /// Creates a new game with two players
@@ -62,7 +84,7 @@ namespace Softklin.Checkers
             this.thePlayers.Add(player2);
             this.theBoard = new Board(this.thePlayers);
             this.GameStatus = GameState.NOT_STARTED;
-            this.theScoreCard = new Score();
+            this.ScoreCard = new Score(this.thePlayers);
         }
 
         /// <summary>
@@ -79,6 +101,7 @@ namespace Softklin.Checkers
 
             Player who = this.thePlayers[n % 2];
             this.GameStatus = GameState.RUNNING;
+            this.NextPlayer = who;
             GameStarted(who);
         }
 
@@ -95,6 +118,7 @@ namespace Softklin.Checkers
                 throw new CheckersGameException("The first player doesn't exists in this game");
 
             this.GameStatus = GameState.RUNNING;
+            this.NextPlayer = first;
             GameStarted(first);
         }
 
@@ -131,15 +155,20 @@ namespace Softklin.Checkers
         RUNNING,
 
         /// <summary>
+        /// The game is currently paused
+        /// </summary>
+        /// <remarks>
+        /// Not implemented. Reserved for future use
+        /// </remarks>
+        PAUSED,
+
+        /// <summary>
         /// The game already ended due a victory or draw
         /// </summary>
         ENDED
     }
 
 
-    /// <summary>
-    /// Checkers Game Exception
-    /// </summary>
     [Serializable]
     public class CheckersGameException : Exception
     {
