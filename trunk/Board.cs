@@ -23,7 +23,7 @@ namespace Softklin.Checkers
         /// Creates a new checkers board
         /// </summary>
         /// <param name="players">The player list</param>
-        public Board(List<Player> players)
+        internal Board(List<Player> players)
         {
             this.theBoard = new Piece[BOARD_SIZE, BOARD_SIZE];
             this.thePlayers = new List<Player>(players);
@@ -31,6 +31,84 @@ namespace Softklin.Checkers
             this.cacheOutdated = false;
             populateBoard();
             generatePositionCache();
+        }
+
+        /// <summary>
+        /// Returns a line of pieces from the board
+        /// </summary>
+        /// <param name="index">The 0-based index opf line</param>
+        /// <returns>Line of Pieces for the given index</returns>
+        public Piece[] this[int index]
+        {
+            get
+            {
+                try
+                {
+                    Piece[] pieces = new Piece[BOARD_SIZE];
+
+                    for (int i = 0; i < BOARD_SIZE; i++)
+                        pieces[i] = this.theBoard[index, i];
+
+                    return pieces;
+                }
+                catch (Exception e)
+                {
+                    throw new CheckersBoardException("Invalid index", e);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a position cache for clients
+        /// </summary>
+        /// <returns>Position cache of all pieces</returns>
+        public PositionStatus[,] getPiecesPosition()
+        {
+            Object justToLockThread = new Object();
+
+            lock (justToLockThread)
+            {
+                if (this.cacheOutdated)
+                    generatePositionCache();
+
+                return this.positionCache;
+            }
+        }
+
+        /// <summary>
+        /// Moves a piece from a position to another
+        /// </summary>
+        /// <param name="x">The x-axis value where is the piece to be moved</param>
+        /// <param name="y">The y-axis value where is the piece to be moved</param>
+        /// <param name="toX">The x-axis value where the piece should be moved to</param>
+        /// <param name="toY">The y-axis value where the piece should be moved to</param>
+        public void movePiece(int x, int y, int toX, int toY)
+        {
+            if (!inBounds(x) || !inBounds(y) || !inBounds(toX) || !inBounds(toY))
+                throw new CheckersBoardException(
+                    String.Format(
+                        "Values are out of bounds: ({0},{1})->({2},{3})",
+                        x, y, toX, toY
+                    )
+                );
+
+            if (this.theBoard[x, y] == null)
+                throw new CheckersBoardException(String.Format("There's no piece at ({0},{1})", x, y));
+
+            if (this.theBoard[toX, toY] != null)
+                throw new CheckersBoardException(String.Format("There's a piece at ({0},{1})", toX, toY));
+
+            // TODO method stub (check if there's a piece between the move, piece is queen, etc)
+        }
+
+        /// <summary>
+        /// Checks if a coordinate is inside the board
+        /// </summary>
+        /// <param name="i">The value to check</param>
+        /// <returns>True, if the value is inside of board, false otherwise</returns>
+        private bool inBounds(int i)
+        {
+            return i >= 0 && i < BOARD_SIZE;
         }
 
         /// <summary>
@@ -42,13 +120,13 @@ namespace Softklin.Checkers
             // http://www.jimloy.com/checkers/rules2.htm
 
             // first player
-            for (int i = 0; i < 4; i++)
-                for (int c = (i % 2); c < 8; c += 2)
+            for (int i = 0; i <= 2; i++)
+                for (int c = (i+1 % 2); c < 8; c += 2)
                     this.theBoard[i, c] = new Piece(this.thePlayers[0]);
 
             // second player
-            for (int i = 4; i < 8; i++)
-                for (int c = (i % 2); c < 8; c += 2)
+            for (int i = 5; i <= 7; i++)
+                for (int c = (i+1 % 2); c < 8; c += 2)
                     this.theBoard[i, c] = new Piece(this.thePlayers[1]);
         }
 
@@ -78,23 +156,6 @@ namespace Softklin.Checkers
                         this.positionCache[i, j] = p;
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Generates a position cache for clients
-        /// </summary>
-        /// <returns>Position cache of all pieces</returns>
-        public PositionStatus[,] getPiecesPosition()
-        {
-            Object justToLockThread = new Object();
-
-            lock (justToLockThread)
-            {
-                if (this.cacheOutdated)
-                    generatePositionCache();
-
-                return this.positionCache;
             }
         }
     }
