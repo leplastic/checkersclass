@@ -24,7 +24,7 @@ namespace Softklin.Checkers
         /// When the first player's turn end, and for the next ones, this event will be raised normally
         /// </remarks>
         public event ChangedTurnEvent ChangedTurn;
-        public delegate void ChangedTurnEvent(Player nextPlayer);
+        public delegate void ChangedTurnEvent(Player previousPlayer, Player nextPlayer);
 
         #endregion
 
@@ -51,9 +51,9 @@ namespace Softklin.Checkers
         public Score ScoreCard { get; private set; }
 
         /// <summary>
-        /// Gets the player who will play (next turn or next move)
+        /// Gets the current player
         /// </summary>
-        public Player NextPlayer { get; private set; }
+        public Player CurrentPlayer { get; private set; }
 
         #endregion
 
@@ -91,7 +91,7 @@ namespace Softklin.Checkers
         /// Starts the game. The first player will be choosen randomly.
         /// </summary>
         /// <remarks>
-        /// As the checkers game has two players, the random factor is based on even/odd,
+        /// As the checkers game has two players, the random factor is based on an even/odd pick algorithm,
         /// so both the players have equal oportunity to start the game.
         /// </remarks>
         public void startGame()
@@ -101,7 +101,7 @@ namespace Softklin.Checkers
 
             Player who = this.thePlayers[n % 2];
             this.GameStatus = GameState.RUNNING;
-            this.NextPlayer = who;
+            this.CurrentPlayer = who;
             GameStarted(who);
         }
 
@@ -112,14 +112,58 @@ namespace Softklin.Checkers
         public void startGame(Player first)
         {
             if (this.GameStatus != GameState.NOT_STARTED)
-                throw new CheckersGameException("The game already started or ended. Please start a new game instead");
+                throw new CheckersGameException(
+                    "The game already started or ended. Please start a new instance of Game instead"
+                );
 
             if (!this.thePlayers.Contains(first))
                 throw new CheckersGameException("The first player doesn't exists in this game");
 
             this.GameStatus = GameState.RUNNING;
-            this.NextPlayer = first;
+            this.CurrentPlayer = first;
             GameStarted(first);
+        }
+
+        /// <summary>
+        /// Moves a piece from a given location to another in the board
+        /// </summary>
+        /// <param name="currentLocation">The current location of piece</param>
+        /// <param name="destination">The destination of the current piece</param>
+        /// <remarks>
+        /// <para>The move is valid for the current player</para>
+        /// <para>This method follows the current checkers rules and therefore, an exception will
+        /// be thrown if anything ilegal occurs (eg. trying to move oposite player's piece )</para>
+        /// </remarks>
+        public void doMove(PieceLocation currentLocation, PieceLocation destination)
+        {
+            // check if there's a piece in the right place
+            if (this.theBoard[currentLocation.X][currentLocation.Y] == null)
+                throw new CheckersGameException(
+                    String.Format(
+                        "There is no piece at ({0},{1})",
+                        currentLocation.X, currentLocation.Y
+                    )
+                );
+
+            // check if the destination position has any piece on it
+            if (this.theBoard[destination.X][destination.Y] != null)
+                throw new CheckersGameException(
+                    String.Format(
+                        "There is already a piece at ({0},{1})",
+                        destination.X, destination.Y
+                    )
+                );
+
+            // check if the piece we're trying to move belongs to the current player
+            if (this.theBoard[currentLocation.X][currentLocation.Y].OwnerPlayer != this.CurrentPlayer)
+                throw new CheckersGameException(
+                    String.Format(
+                        "The piece at ({0},{1}) doesn't belong to {2} (player/piece mismatch)",
+                        currentLocation.X, currentLocation.Y, this.CurrentPlayer
+                    )
+                );
+
+            // TODO check the number of positions we're moving
         }
 
         /// <summary>
@@ -167,6 +211,23 @@ namespace Softklin.Checkers
         /// </summary>
         ENDED
     }
+
+
+    /// <summary>
+    /// Struct to make easier for pointing places in the board
+    /// </summary>
+    public struct PieceLocation
+	{
+        /// <summary>
+        /// The X axis value
+        /// </summary>
+		public int X { get; set; }
+
+        /// <summary>
+        /// The Y axis value
+        /// </summary>
+        public int Y { get; set; }
+	}
 
 
     [Serializable]
