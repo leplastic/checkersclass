@@ -42,7 +42,7 @@ namespace Softklin.Checkers
 
         public override bool Equals(object obj)
         {
-            return (obj.GetType().Equals(this.GetType()) && ((Player) obj).Nickname == this.Nickname);
+            return (obj is Player && ((Player) obj).Nickname == this.Nickname);
         }
 
         public override int GetHashCode()

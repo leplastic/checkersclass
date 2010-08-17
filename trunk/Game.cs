@@ -59,16 +59,15 @@ namespace Softklin.Checkers
 
 
         /// <summary>
-        /// Creates a new game with two players
+        /// Creates a new game with two players, without the game log feature
         /// </summary>
         /// <param name="player1">The player 1</param>
         /// <param name="player2">The player 2</param>
-        /// <param name="allowLogging">Enable the gamelog feature or not</param>
         /// <remarks>
         /// Once enabled, the gamelog cannot be stopped.
-        /// Also, if disabled by default, it's not possible to enable it when the game is running.
+        /// Also, if disabled by default, it's not possible to enable game logging when the game is running.
         /// </remarks>
-        internal Game(Player player1, Player player2, bool allowLogging)
+        internal Game(Player player1, Player player2)
         {
             if (player1 == null || player2 == null)
                 throw new CheckersGameException("Instance of player1 and player 2 required");
@@ -76,15 +75,30 @@ namespace Softklin.Checkers
             if (player1.Equals(player2))
                 throw new CheckersGameException("The players cannot be equal");
 
-            if (allowLogging)
-                this.theLog = new GameLog();
-
             this.thePlayers = new List<Player>(2);
             this.thePlayers.Add(player1);
             this.thePlayers.Add(player2);
             this.theBoard = new Board(this.thePlayers);
             this.GameStatus = GameState.NOT_STARTED;
             this.ScoreCard = new Score(this.thePlayers);
+        }
+
+        /// <summary>
+        /// Creates a new game with two players, enabling game logging
+        /// </summary>
+        /// <param name="player1">The player 1</param>
+        /// <param name="player2">The player 2</param>
+        /// <param name="table">Translation table for the game log</param>
+        /// <remarks>
+        /// Once enabled, the gamelog cannot be stopped.
+        /// Also, if disabled by default, it's not possible to enable game logging when the game is running.
+        /// </remarks>
+        internal Game(Player player1, Player player2, GameLogTranslation table) : this(player1, player2)
+        {
+            if (table == null)
+                throw new CheckersGameException("To enable game log feature, the translation table cannot be null");
+
+            this.theLog = new GameLog(table);
         }
 
         /// <summary>
