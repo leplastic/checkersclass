@@ -33,7 +33,22 @@ namespace Softklin.Checkers
         /// </remarks>
         public static Game createGame(Player player1, Player player2, bool useGameLog)
         {
-            return new Game(player1, player2, useGameLog);
+            return new Game(player1, player2);
+        }
+
+        /// <summary>
+        /// Creates an empty translation table for use with game log feature
+        /// </summary>
+        /// <param name="languageCode">Any code to future reference</param>
+        /// <returns>New translation table</returns>
+        /// <remarks>
+        /// <para>The translation table is only needed if it's intended to use
+        /// the built-in game log feature.</para>
+        /// <para>The translation table must be populated before used</para>
+        /// </remarks>
+        public static GameLogTranslation createTranslationTable(string languageCode)
+        {
+            return new GameLogTranslation(languageCode);
         }
     }
 }

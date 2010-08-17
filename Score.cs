@@ -35,12 +35,14 @@ namespace Softklin.Checkers
             this.scoreCard = new Dictionary<Player, Dictionary<ScoreType, int>>();
         }
 
+        /// <summary>
+        /// Creates a new score card, with some plyers
+        /// </summary>
+        /// <param name="players">List of players to add</param>
         internal Score(List<Player> players) : this()
         {
             foreach (Player p in players)
-            {
                 addPlayer(p);
-            }
         }
 
         /// <summary>
@@ -91,11 +93,7 @@ namespace Softklin.Checkers
         /// </remarks>
         internal void addScore(Player player, ScoreType type)
         {
-            addPlayer(player);
-
-            if (!this.LockedScores)
-                this.scoreCard[player][type] += 1;
-
+            addScore(player, type, 1);
         }
 
         /// <summary>
@@ -109,9 +107,11 @@ namespace Softklin.Checkers
         /// </remarks>
         internal void addScore(Player player, ScoreType type, int count)
         {
-            if (!this.LockedScores)
-                for (int i = 0; i < count; i++)
-                    addScore(player, type);
+            if (!this.LockedScores && count >= 1)
+            {
+                addPlayer(player);
+                this.scoreCard[player][type] += count;
+            }
         }
 
         /// <summary>
