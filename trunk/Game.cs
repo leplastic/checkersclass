@@ -116,7 +116,9 @@ namespace Softklin.Checkers
             Player who = this.thePlayers[n % 2];
             this.GameStatus = GameState.RUNNING;
             this.CurrentPlayer = who;
-            GameStarted(who);
+            
+            if (GameStarted != null)
+                GameStarted(who);
         }
 
         /// <summary>
@@ -135,7 +137,9 @@ namespace Softklin.Checkers
 
             this.GameStatus = GameState.RUNNING;
             this.CurrentPlayer = first;
-            GameStarted(first);
+
+            if (GameStarted != null)
+                GameStarted(first);
         }
 
         /// <summary>
@@ -152,7 +156,7 @@ namespace Softklin.Checkers
         {
             // check if there's a piece in the right place
             if (this.theBoard[currentLocation.X][currentLocation.Y] == null)
-                throw new CheckersGameException(
+                throw new CheckersInGameException(
                     String.Format(
                         "There is no piece at ({0},{1})",
                         currentLocation.X, currentLocation.Y
@@ -161,7 +165,7 @@ namespace Softklin.Checkers
 
             // check if the destination position has any piece on it
             if (this.theBoard[destination.X][destination.Y] != null)
-                throw new CheckersGameException(
+                throw new CheckersInGameException(
                     String.Format(
                         "There is already a piece at ({0},{1})",
                         destination.X, destination.Y
@@ -170,7 +174,7 @@ namespace Softklin.Checkers
 
             // check if the piece we're trying to move belongs to the current player
             if (this.theBoard[currentLocation.X][currentLocation.Y].OwnerPlayer != this.CurrentPlayer)
-                throw new CheckersGameException(
+                throw new CheckersInGameException(
                     String.Format(
                         "The piece at ({0},{1}) doesn't belong to {2} (player/piece mismatch)",
                         currentLocation.X, currentLocation.Y, this.CurrentPlayer
@@ -244,6 +248,9 @@ namespace Softklin.Checkers
 	}
 
 
+    /// <summary>
+    /// Instance creation and game start related exceptions
+    /// </summary>
     [Serializable]
     public class CheckersGameException : Exception
     {
@@ -251,6 +258,22 @@ namespace Softklin.Checkers
         public CheckersGameException(string message) : base(message) { }
         public CheckersGameException(string message, Exception inner) : base(message, inner) { }
         protected CheckersGameException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) { }
+    }
+
+
+    /// <summary>
+    /// Exceptions occured during a game: (invalid moves, not a player's turn, etc)
+    /// </summary>
+    [Serializable]
+    public class CheckersInGameException : Exception
+    {
+        public CheckersInGameException() { }
+        public CheckersInGameException(string message) : base(message) { }
+        public CheckersInGameException(string message, Exception inner) : base(message, inner) { }
+        protected CheckersInGameException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)
             : base(info, context) { }

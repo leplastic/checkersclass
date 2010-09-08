@@ -57,19 +57,30 @@ namespace Softklin.Checkers
         /// </summary>
         /// <param name="from">Lower time limit</param>
         /// <param name="to">Higher time limit</param>
+        /// <param name="table">The translation table</param>
         /// <returns>Filtered game log</returns>
         /// <remarks>
         /// If the <c>from</c> date is greater than the <c>to</c> date
         /// the result will be an empty list
         /// </remarks>
-        public List<GameLogEntry> getEntries(DateTime from, DateTime to)
+        public List<GameLogEntry> getEntries(DateTime from, DateTime to, GameLogTranslation table)
         {
             this.theLog.Sort();
             List<GameLogEntry> result = new List<GameLogEntry>();
 
             foreach (GameLogEntry glo in this.theLog)
                 if (glo.Time >= from && glo.Time <= to)
-                    result.Add(glo);
+                {
+                    try
+                    {
+                        glo.Message = table[glo.Type];
+                        result.Add(glo);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new CheckersGameLogException("Translation missing", e);
+                    }
+                }
 
             return result;
         }
@@ -77,11 +88,11 @@ namespace Softklin.Checkers
         /// <summary>
         /// Returns a complete copy of the log sorted by time (ascending)
         /// </summary>
+        /// <param name="table">The translation table</param>
         /// <returns>Entire log of the game</returns>
-        public List<GameLogEntry> getAllEntries()
+        public List<GameLogEntry> getAllEntries(GameLogTranslation table)
         {
-            this.theLog.Sort();
-            return this.theLog;
+            return getEntries(this.startTime, DateTime.Now, table);
         }
     }
 
@@ -147,6 +158,7 @@ namespace Softklin.Checkers
         private string translateFromContext(string sentence)
         {
             // TODO Method stub for translateFromContext
+            // replace the placeholders with the context information
             return "";
         }
 
