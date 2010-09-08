@@ -22,16 +22,30 @@ namespace Softklin.Checkers
         }
         
         /// <summary>
-        /// Creates a new game
+        /// Creates a new game, using the built-in game log feature
         /// </summary>
         /// <param name="player1">The player 1 instance</param>
         /// <param name="player2">The player 2 instance</param>
-        /// <param name="useGameLog">Allows the game to use the built-in game log feature or not</param>
+        /// <param name="translationTable">The Translation table to use in the game</param>
         /// <returns>An instance of a newly created game</returns>
         /// <remarks>
         /// The players should not use the same nickname (they can't be the same player)
         /// </remarks>
-        public static Game createGame(Player player1, Player player2, bool useGameLog)
+        public static Game createGame(Player player1, Player player2, GameLogTranslation translationTable)
+        {
+            return new Game(player1, player2, translationTable);
+        }
+
+        /// <summary>
+        /// Creates a new game without built-in game log feature
+        /// </summary>
+        /// <param name="player1">The player 1 instance</param>
+        /// <param name="player2">The player 2 instance</param>
+        /// <returns>An instance of a newly created game</returns>
+        /// <remarks>
+        /// The players should not use the same nickname (they can't be the same player)
+        /// </remarks>
+        public static Game createGame(Player player1, Player player2)
         {
             return new Game(player1, player2);
         }
@@ -49,6 +63,19 @@ namespace Softklin.Checkers
         public static GameLogTranslation createTranslationTable(string languageCode)
         {
             return new GameLogTranslation(languageCode);
+        }
+
+        /// <summary>
+        /// Creates a game log translation table already populated with english sentences
+        /// </summary>
+        /// <returns>Populated game log translation table</returns>
+        public static GameLogTranslation createDefaultTranslationTable()
+        {
+            GameLogTranslation glt = new GameLogTranslation("EN");
+
+            // TODO Populate the translation table with default english sentences
+
+            return glt;
         }
     }
 }
